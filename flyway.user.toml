@@ -1,4 +1,13 @@
-[flywayDesktop]
+flywayDesktop = { }
 
 [redgateCompare]
 filterFile = "filter.rgf"
+
+[environments.development]
+url = "jdbc:sqlserver://localhost;databaseName=Northwind_dev;encrypt=true;integratedSecurity=true;trustServerCertificate=true"
+displayName = "Development database"
+
+[environments.shadow]
+url = "jdbc:sqlserver://localhost;databaseName=Northwind_Shadow;encrypt=true;integratedSecurity=true;trustServerCertificate=true"
+displayName = "Shadow database"
+provisioner = "clean"

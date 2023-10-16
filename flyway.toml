@@ -2,20 +2,13 @@ id = "97ea357d-2613-4415-b434-775478105625"
 name = "FlywayTrialProject"
 databaseType = "SqlServer"
 
-[environments.development]
-url = "jdbc:sqlserver://localhost;databaseName=WidgetDev;encrypt=true;integratedSecurity=true;trustServerCertificate=true"
-schemas = [ ]
-displayName = "Development database"
-
-[environments.shadow]
-url = "jdbc:sqlserver://localhost;databaseName=WidgetZShadow;encrypt=true;integratedSecurity=true;trustServerCertificate=true"
-schemas = [ ]
-displayName = "Shadow database"
-provisioner = "clean"
-
 [environments.production]
 url = "jdbc:sqlserver://localhost;databaseName=WidgetProd;encrypt=true;integratedSecurity=true;trustServerCertificate=true"
 schemas = [ ]
+displayName = "Production"
+
+[environments.target2]
+url = "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind;encrypt=true;integratedSecurity=true;trustServerCertificate=true"
 displayName = "Production"
 
 [flyway]
@@ -25,8 +18,7 @@ outOfOrder = true
 validateMigrationNaming = true
 defaultSchema = "dbo"
 baselineOnMigrate = true
-baselineVersion = "001_20230703120714"
-
+baselineVersion = "001_20231016191094"
 
 [flywayDesktop]
 developmentEnvironment = "development"
