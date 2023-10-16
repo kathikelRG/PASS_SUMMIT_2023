@@ -36,7 +36,7 @@ jobs:
       
       # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
       databaseName: "Northwind_Build"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=production;databaseName=northwind_build;encrypt=true;authentication=sqlPassword;trustServerCertificate=true;User=${{ secrets.userName }};Password=${{ secrets.password }}" 
+      JDBC: "jdbc:sqlserver://localhost;instanceName=production;databaseName=northwind_build;encrypt=true;authentication=sqlPassword;trustServerCertificate=true;User=flyway;Password=testing1231!"
 
       displayName: 'Build'
       executeBuild: true
@@ -95,7 +95,7 @@ jobs:
         databaseName: "Northwind"
         JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind;encrypt=true;authentication=sqlPassword;trustServerCertificate=true" 
 
-        check_JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind_build;encrypt=true;authentication=sqlPassword;trustServerCertificate=true;User=${{ secrets.userName }};Password=${{ secrets.password }}" 
+        check_JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind_build;encrypt=true;authentication=sqlPassword;trustServerCertificate=true;User=flyway;Password=testing1231!"
         userName: ${{ secrets.userName }}
         password: ${{ secrets.password }}
         
@@ -140,7 +140,7 @@ jobs:
     env:
       stage: 'Prod'
       databaseName: "Northwind"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;authentication=sqlPassword;databaseName=Northwind;encrypt=true;trustServerCertificate=true;User=${{ secrets.userName }};Password=${{ secrets.password }}"  
+      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;authentication=sqlPassword;databaseName=Northwind;encrypt=true;trustServerCertificate=true;User=flyway;Password=testing1231!" 
       
       pauseForCodeReview: true
  
