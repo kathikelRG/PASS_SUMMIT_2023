@@ -2,11 +2,6 @@ id = "97ea357d-2613-4415-b434-775478105625"
 name = "FlywayTrialProject"
 databaseType = "SqlServer"
 
-[environments.production]
-url = "jdbc:sqlserver://localhost;databaseName=WidgetProd;encrypt=true;integratedSecurity=true;trustServerCertificate=true"
-schemas = [ ]
-displayName = "Production"
-
 [environments.target2]
 url = "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind;encrypt=true;integratedSecurity=true;trustServerCertificate=true"
 displayName = "Production"
