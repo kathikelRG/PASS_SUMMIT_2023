@@ -11,3 +11,7 @@ displayName = "Development database"
 url = "jdbc:sqlserver://localhost;databaseName=Northwind_Shadow;encrypt=true;integratedSecurity=true;trustServerCertificate=true"
 displayName = "Shadow database"
 provisioner = "clean"
+
+[environments.target2]
+user = "flyway"
+password = "${localSecret.Flyway Desktop 0dd8debc-3d1c-47b0-ab5d-7d0460fadae7}"

@@ -34,11 +34,14 @@ jobs:
       
       # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
       databaseName: "Northwind_Build"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=production;databaseName=northwind_build;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
+      JDBC: "jdbc:sqlserver://localhost;instanceName=production;databaseName=northwind_build;encrypt=true;authentication=sqlPassword;trustServerCertificate=true" 
 
       displayName: 'Build'
       executeBuild: true
       publishArtifacts: true
+
+      userName: ${{ secrets.userName }}
+      password: ${{ secrets.password }}
  
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -89,9 +92,11 @@ jobs:
         stage: 'Prod'
         # Environment Secrets - Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
         databaseName: "Northwind"
-        JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
+        JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind;encrypt=true;authentication=sqlPassword;trustServerCertificate=true" 
 
-        check_JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind_build;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
+        check_JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind_build;encrypt=true;authentication=sqlPassword;trustServerCertificate=true" 
+        userName: ${{ secrets.userName }}
+        password: ${{ secrets.password }}
         
         # End of Environment Secrets #
         generateDriftAndChangeReport: true
@@ -134,7 +139,7 @@ jobs:
     env:
       stage: 'Prod'
       databaseName: "Northwind"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
+      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;authentication=sqlPassword;databaseName=Northwind;encrypt=true;trustServerCertificate=true" 
       
       pauseForCodeReview: true
  
