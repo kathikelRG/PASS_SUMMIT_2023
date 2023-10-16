@@ -33,8 +33,8 @@ jobs:
       stage: 'Build'
       
       # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
-      databaseName: "Northwind_Build"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind_BUILD;encrypt=true;integratedSecurity=true;trustServerCertificate=true 
+      databaseName: "WidgetZBuild"
+      JDBC: "jdbc:sqlserver://localhost;instanceName=SQLEXPRESS;databaseName=WidgetZBuild;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
 
       displayName: 'Build'
       executeBuild: true
@@ -58,10 +58,10 @@ jobs:
           flyway -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false' -reportFilename="Reports\ValidateVScripts"
           
       # Runs the Flyway Undo command against the Build database
-      #- name: undo Build DB
-      #  if: env.executeBuild == 'true'
-      #  run: |
-      #    flyway -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info undo info -url="${{ env.JDBC }}" -cleanDisabled='false' -target="${{ env.FIRST_UNDO_SCRIPT }}" -reportFilename="Reports/ValidateUScripts"
+      - name: undo Build DB
+        if: env.executeBuild == 'true'
+        run: |
+          flyway -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info undo info -url="${{ env.JDBC }}" -cleanDisabled='false' -target="${{ env.FIRST_UNDO_SCRIPT }}" -reportFilename="Reports/ValidateUScripts"
  
        # Create a directory to stage the artifact files
       - name: Stage files for publishing
@@ -88,10 +88,10 @@ jobs:
       env:
         stage: 'Prod'
         # Environment Secrets - Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
-        databaseName: "Northwind"
-        JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
+        databaseName: "WidgetProd"
+        JDBC: "jdbc:sqlserver://localhost;instanceName=SQLEXPRESS;databaseName=WidgetProd;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
 
-        check_JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind_BUILD;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
+        check_JDBC: "jdbc:sqlserver://localhost;instanceName=SQLEXPRESS;databaseName=WidgetZCheck;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
         
         # End of Environment Secrets #
         generateDriftAndChangeReport: true
@@ -133,8 +133,8 @@ jobs:
     needs: prod-preparation
     env:
       stage: 'Prod'
-      databaseName: "Northwind"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
+      databaseName: "WidgetProd"
+      JDBC: "jdbc:sqlserver://localhost;instanceName=SQLEXPRESS;databaseName=WidgetProd;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
       
       pauseForCodeReview: true
  
