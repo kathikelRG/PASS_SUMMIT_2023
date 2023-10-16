@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
  
-name: deployToProcuction-Workflow
+name: deployToProduction-Workflow
  
 # Controls when the workflow will run
 on:
@@ -30,18 +30,19 @@ jobs:
     runs-on: self-hosted
     environment: 'build' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     env:
+      userName: ${{ secrets.userName }}
+      password: ${{ secrets.password }}
       stage: 'Build'
       
       # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
       databaseName: "Northwind_Build"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=production;databaseName=northwind_build;encrypt=true;authentication=sqlPassword;trustServerCertificate=true" 
+      JDBC: "jdbc:sqlserver://localhost;instanceName=production;databaseName=northwind_build;encrypt=true;authentication=sqlPassword;trustServerCertificate=true;User=${{ secrets.userName }};Password=${{ secrets.password }}" 
 
       displayName: 'Build'
       executeBuild: true
       publishArtifacts: true
 
-      userName: ${{ secrets.userName }}
-      password: ${{ secrets.password }}
+     
  
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -94,7 +95,7 @@ jobs:
         databaseName: "Northwind"
         JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind;encrypt=true;authentication=sqlPassword;trustServerCertificate=true" 
 
-        check_JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind_build;encrypt=true;authentication=sqlPassword;trustServerCertificate=true" 
+        check_JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind_build;encrypt=true;authentication=sqlPassword;trustServerCertificate=true;User=${{ secrets.userName }};Password=${{ secrets.password }}" 
         userName: ${{ secrets.userName }}
         password: ${{ secrets.password }}
         
@@ -139,7 +140,7 @@ jobs:
     env:
       stage: 'Prod'
       databaseName: "Northwind"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;authentication=sqlPassword;databaseName=Northwind;encrypt=true;trustServerCertificate=true" 
+      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;authentication=sqlPassword;databaseName=Northwind;encrypt=true;trustServerCertificate=true;User=${{ secrets.userName }};Password=${{ secrets.password }}"  
       
       pauseForCodeReview: true
  
