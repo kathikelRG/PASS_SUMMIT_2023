@@ -17,7 +17,7 @@ env:
  
   FLYWAY_LICENSE_KEY: ${{ secrets.FLYWAY_LICENSE_KEY }} #Repository Secret - Create this within the Projects Settings > Secrects > Actions section
   # If the first undo script is U002, this will validate all undo scripts up to and including that
-  FIRST_UNDO_SCRIPT: "002.20230703112421"
+  FIRST_UNDO_SCRIPT: "002.20231016210006"
   # Enable this for additional debug logging
   ACTIONS_RUNNER_DEBUG: true 
  
@@ -33,8 +33,8 @@ jobs:
       stage: 'Build'
       
       # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
-      databaseName: "WidgetZBuild"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=SQLEXPRESS;databaseName=WidgetZBuild;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
+      databaseName: "Northwind_Build"
+      JDBC: "jdbc:sqlserver://localhost;instanceName=production;databaseName=northwind_build;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
 
       displayName: 'Build'
       executeBuild: true
@@ -88,10 +88,10 @@ jobs:
       env:
         stage: 'Prod'
         # Environment Secrets - Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
-        databaseName: "WidgetProd"
-        JDBC: "jdbc:sqlserver://localhost;instanceName=SQLEXPRESS;databaseName=WidgetProd;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
+        databaseName: "Northwind"
+        JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
 
-        check_JDBC: "jdbc:sqlserver://localhost;instanceName=SQLEXPRESS;databaseName=WidgetZCheck;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
+        check_JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind_build;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
         
         # End of Environment Secrets #
         generateDriftAndChangeReport: true
@@ -133,8 +133,8 @@ jobs:
     needs: prod-preparation
     env:
       stage: 'Prod'
-      databaseName: "WidgetProd"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=SQLEXPRESS;databaseName=WidgetProd;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
+      databaseName: "Northwind"
+      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
       
       pauseForCodeReview: true
  
