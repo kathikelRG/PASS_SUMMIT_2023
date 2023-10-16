@@ -98,7 +98,8 @@ jobs:
         check_JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind_build;encrypt=true;authentication=sqlPassword;trustServerCertificate=true;User=flyway;Password=testing1231!"
         userName: ${{ secrets.userName }}
         password: ${{ secrets.password }}
-        
+        check_userName: ${{ secrets.userName }}
+        check_password: ${{ secrets.userName }}
         # End of Environment Secrets #
         generateDriftAndChangeReport: true
         failReleaseIfDriftDetected: false
