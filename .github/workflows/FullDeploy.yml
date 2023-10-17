@@ -101,7 +101,7 @@ jobs:
         check_userName: ${{ secrets.userName }}
         check_password: ${{ secrets.userName }}
         # End of Environment Secrets #
-        generateDriftAndChangeReport: true
+        generateDriftAndChangeReport: false
         failReleaseIfDriftDetected: false
         staticCodeAnalysis: false #Currently not setup in this pipeline
         publishArtifacts: true

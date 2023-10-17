@@ -1,7 +1,7 @@
 flywayDesktop = { }
 
 [redgateCompare]
-filterFile = "filter.rgf"
+filterFile = "filter.scpf"
 
 [environments.development]
 url = "jdbc:sqlserver://localhost;databaseName=Northwind_dev;encrypt=true;integratedSecurity=true;trustServerCertificate=true"
