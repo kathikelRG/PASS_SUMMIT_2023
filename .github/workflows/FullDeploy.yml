@@ -95,13 +95,13 @@ jobs:
         databaseName: "Northwind"
         JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind;encrypt=true;authentication=sqlPassword;trustServerCertificate=true;User=flyway;Password=testing1231!"
 
-        check_JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind_build;encrypt=true;authentication=sqlPassword;trustServerCertificate=true;User=flyway;Password=testing1231!"
+        check_JDBC: "jdbc:sqlserver://localhost;instanceName=Production;databaseName=Northwind_check;encrypt=true;authentication=sqlPassword;trustServerCertificate=true;User=flyway;Password=testing1231!"
         userName: ${{ secrets.userName }}
         password: ${{ secrets.password }}
         check_userName: ${{ secrets.userName }}
         check_password: ${{ secrets.userName }}
         # End of Environment Secrets #
-        generateDriftAndChangeReport: false
+        generateDriftAndChangeReport: true
         failReleaseIfDriftDetected: false
         staticCodeAnalysis: false #Currently not setup in this pipeline
         publishArtifacts: true
