@@ -34,7 +34,7 @@ jobs:
       
       # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
       databaseName: "Northwind_Build"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;authentication=sqlPassword;databaseName=northwind_build;encrypt=true;trustServerCertificate=true;user=${userName};password=${password}"
+      JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=northwind_build;encrypt=true;trustServerCertificate=true;user=${userName};password=${password}"
       displayName: 'Build'
       executeBuild: true
       publishArtifacts: true
@@ -47,8 +47,8 @@ jobs:
       - uses: actions/checkout@v3
       
       #check directory
-      - name: Check directory
-        run: echo $env:path
+      #- name: Check directory
+      #  run: echo $env:path
 
 
       # Runs the Flyway Clean command against the Build database
