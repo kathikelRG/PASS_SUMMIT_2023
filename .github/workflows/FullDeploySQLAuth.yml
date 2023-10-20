@@ -48,8 +48,8 @@ jobs:
       
       #check directory
       - name: Check directory
-        run: dir
-        
+        run: dir c:\
+
       # Runs the Flyway Clean command against the Build database
       - name: Clean Build DB
         if: env.executeBuild == 'true'
