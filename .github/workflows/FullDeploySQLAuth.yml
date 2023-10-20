@@ -89,8 +89,11 @@ jobs:
     env:
       stage: 'test'
       databaseName: "Northwind_test"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;authentication=sqlPassword;databaseName=Northwind_test;encrypt=true;trustServerCertificate=true;User=${{ secrets.user }};Password=${{ secrets.password }}" 
-      
+      userName: ${{ secrets.userName }}
+      password: ${{ secrets.password }}
+      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;authentication=sqlPassword;databaseName=Northwind_test;encrypt=true;trustServerCertificate=true;User=${userName};Password=${password}" 
+ 
+
       pauseForCodeReview: true
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -102,7 +105,7 @@ jobs:
       - name: Migrate Test DB
         if: ${{ true }}
         run: |
-          flyway -baselineOnMigrate="true" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
+          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
           echo test, and deploy your project.
 
   prod:
@@ -115,7 +118,9 @@ jobs:
     env:
       stage: 'Prod'
       databaseName: "Northwind"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;authentication=sqlPassword;databaseName=Northwind;encrypt=true;trustServerCertificate=true;User=${{ secrets.user }};Password=${{ secrets.password }}" 
+      userName: ${{ secrets.userName }}
+      password: ${{ secrets.password }}
+      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;authentication=sqlPassword;databaseName=Northwind;encrypt=true;trustServerCertificate=true;User=${userName};Password=${password}" 
   
       pauseForCodeReview: true
  
@@ -128,5 +133,5 @@ jobs:
       - name: Migrate Production DB
         if: ${{ true }}
         run: |
-          flyway -baselineOnMigrate="true"  -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
+          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"  -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
           echo test, and deploy your project.
