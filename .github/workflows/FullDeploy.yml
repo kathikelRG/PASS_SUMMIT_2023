@@ -83,7 +83,7 @@ jobs:
           path: Artifact_Files/Migration/
  
   test:
-    name: Deploy Production
+    name: Deploy Test
     # The type of runner that the job will run on
     runs-on: self-hosted
     environment: 'test' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
@@ -92,7 +92,7 @@ jobs:
     env:
       stage: 'test'
       databaseName: "Northwind_test"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;authentication=sqlPassword;databaseName=Northwind_test;encrypt=true;trustServerCertificate=true;User=flyway;Password=testing1231!" 
+      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;integratedSecurity=true;databaseName=Northwind_test;encrypt=true;trustServerCertificate=true;User=flyway;Password=testing1231!" 
       
       pauseForCodeReview: true
 
@@ -118,7 +118,7 @@ jobs:
     env:
       stage: 'Prod'
       databaseName: "Northwind"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;authentication=sqlPassword;databaseName=Northwind;encrypt=true;trustServerCertificate=true;User=flyway;Password=testing1231!" 
+      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;integratedSecurity=true;databaseName=Northwind;encrypt=true;trustServerCertificate=true;User=flyway;Password=testing1231!" 
       
       pauseForCodeReview: true
  
