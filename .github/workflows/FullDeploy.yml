@@ -36,7 +36,7 @@ jobs:
       
       # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
       databaseName: "Northwind_Build"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=production;databaseName=northwind_build;encrypt=true;authentication=sqlPassword;trustServerCertificate=true;User=flyway;Password=testing1231!"
+      JDBC: "jdbc:sqlserver://localhost;instanceName=production;databaseName=northwind_check;encrypt=true;authentication=sqlPassword;trustServerCertificate=true;User=flyway;Password=testing1231!"
 
       displayName: 'Build'
       executeBuild: true

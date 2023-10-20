@@ -3,8 +3,10 @@ name = "FlywayTrialProject"
 databaseType = "SqlServer"
 
 [environments.target2]
-url = "jdbc:sqlserver://localhost;instanceName=Production;authentication=sqlPassword;databaseName=Northwind;encrypt=true;trustServerCertificate=true"
+url = "jdbc:sqlserver://localhost;instanceName=Production;authentication=sqlPassword;databaseName=Northwind_test;encrypt=true;trustServerCertificate=true"
 displayName = "Production"
+
+
 
 [flyway]
 locations = [ "filesystem:migrations" ]
