@@ -48,7 +48,7 @@ jobs:
       
       #check directory
       - name: Check directory
-        run: PATH
+        run: echo $env:path
 
 
       # Runs the Flyway Clean command against the Build database
