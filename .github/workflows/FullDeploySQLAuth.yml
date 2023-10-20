@@ -48,7 +48,8 @@ jobs:
       
       #check directory
       - name: Check directory
-        run: dir c:\
+        run: PATH
+
 
       # Runs the Flyway Clean command against the Build database
       - name: Clean Build DB
