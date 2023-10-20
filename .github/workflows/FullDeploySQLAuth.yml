@@ -50,13 +50,13 @@ jobs:
       - name: Clean Build DB
         if: env.executeBuild == 'true'
         run: |
-          flyway -baselineOnMigrate="true"  -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info clean info -url="${{ env.JDBC }}" -cleanDisabled='false' -reportFilename="Reports\CleanDB"
+          flyway -baselineOnMigrate="true"  -configFiles="${{ GITHUB.WORKSPACE }}\flyway.toml" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info clean info -url="${{ env.JDBC }}" -cleanDisabled='false' -reportFilename="Reports\CleanDB"
         
       # Runs the Flyway Migrate command against the Build database
       - name: Migrate Build DB
         if: env.executeBuild == 'true'
         run: |
-          flyway -baselineOnMigrate="true"  -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false' -reportFilename="Reports\ValidateVScripts"
+          flyway -baselineOnMigrate="true"  -configFiles="${{ GITHUB.WORKSPACE }}\flyway.toml" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false' -reportFilename="Reports\ValidateVScripts"
           
      
        # Create a directory to stage the artifact files
