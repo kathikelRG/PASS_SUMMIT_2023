@@ -89,8 +89,8 @@ jobs:
     env:
       stage: 'test'
       databaseName: "Northwind_test"
-      userName: ${{ secrets.userName }}
-      password: ${{ secrets.password }}
+      userName: 'flyway' #${{ secrets.password }}
+      password: 'testing1231!' #${{ secrets.password }}
       JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=Northwind_test;encrypt=true;trustServerCertificate=true;User=${userName};Password=${password}" 
    
 
