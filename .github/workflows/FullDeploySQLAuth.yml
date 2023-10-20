@@ -85,7 +85,7 @@ jobs:
     env:
       stage: 'test'
       databaseName: "Northwind_test"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;integratedSecurity=true;databaseName=Northwind_test;encrypt=true;trustServerCertificate=true;User=flyway;Password=testing1231!" 
+      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;authentication=sqlPassword;databaseName=Northwind_test;encrypt=true;trustServerCertificate=true;User=${{ secrets.user }};Password=${{ secrets.password }}" 
       
       pauseForCodeReview: true
 
@@ -95,7 +95,7 @@ jobs:
       - uses: actions/checkout@v3
         
       # Runs the Flyway Migrate against the Production database
-      - name: Migrate Production DB
+      - name: Migrate Test DB
         if: ${{ true }}
         run: |
           flyway -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
@@ -111,8 +111,8 @@ jobs:
     env:
       stage: 'Prod'
       databaseName: "Northwind"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;integratedSecurity=true;databaseName=Northwind;encrypt=true;trustServerCertificate=true;User=flyway;Password=testing1231!" 
-      
+      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;authentication=sqlPassword;databaseName=Northwind;encrypt=true;trustServerCertificate=true;User=${{ secrets.user }};Password=${{ secrets.password }}" 
+  
       pauseForCodeReview: true
  
     # Steps represent a sequence of tasks that will be executed as part of the job
