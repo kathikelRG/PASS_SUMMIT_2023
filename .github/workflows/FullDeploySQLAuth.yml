@@ -61,7 +61,7 @@ jobs:
       - name: Migrate Build DB
         if: env.executeBuild == 'true'
         run: |
-          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"  -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" 
+          flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true"  -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" 
           
      
        # Create a directory to stage the artifact files
@@ -92,7 +92,7 @@ jobs:
       userName: ${{ secrets.USERNAME }}
       license: ${{ secrets.PASSWORD }}
 
-      JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=Northwind_test;encrypt=true;trustServerCertificate=true;User=${userName};Password=${password}" 
+      JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=Northwind_test;encrypt=true;trustServerCertificate=true;" 
    
 
       pauseForCodeReview: true
@@ -106,7 +106,7 @@ jobs:
       - name: Migrate Test DB
         if: ${{ true }}
         run: |
-          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
+          flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
           echo test, and deploy your project.
 
   prod:
@@ -134,5 +134,5 @@ jobs:
       - name: Migrate Production DB
         if: ${{ true }}
         run: |
-          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"  -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
+          flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true"  -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
           echo test, and deploy your project.
