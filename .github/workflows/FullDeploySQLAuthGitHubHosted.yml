@@ -85,7 +85,7 @@ jobs:
   test:
     name: Deploy Test
     # The type of runner that the job will run on
-    runs-on: [self-hosted, sqlauth]
+    runs-on: ubuntu-latest
     environment: 'test' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     needs: build
     env:
@@ -110,6 +110,11 @@ jobs:
       #check directory
       #- name: Check directory
       #  run: echo $env:path
+      # TODO URL for community
+      - name: Install Flyway
+        if: env.executeBuild == 'true'
+        run: |
+            "wget -qO- https://download.red-gate.com/maven/release/org/flywaydb/enterprise/flyway-commandline/9.15.1/flyway-commandline-9.15.1-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-9.15.1/flyway /usr/local/bin"
 
        
       # Runs the Flyway Migrate command against the test database
@@ -138,7 +143,7 @@ jobs:
   prod:
     name: Deploy Production
     # The type of runner that the job will run on
-    runs-on: [self-hosted, sqlauth]
+    runs-on: ubuntu-latest
     environment: 'prod' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     if: ${{ true }} #Set this variable to false to temporarily disable the job
     needs: test
@@ -155,7 +160,14 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-        
+      # TODO URL for community
+      - name: Install Flyway
+        if: env.executeBuild == 'true'
+        run: |
+            "wget -qO- https://download.red-gate.com/maven/release/org/flywaydb/enterprise/flyway-commandline/9.15.1/flyway-commandline-9.15.1-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-9.15.1/flyway /usr/local/bin"
+   
+      
+
       # Runs the Flyway Migrate against the Production database
       - name: Migrate Production DB
         if: ${{ true }}
