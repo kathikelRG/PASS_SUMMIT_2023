@@ -14,14 +14,12 @@ on:
   workflow_dispatch:
  
 env:
- 
-
   # Enable this for additional debug logging
   ACTIONS_RUNNER_DEBUG: true 
  
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
+  
   build:
     name: Deploy Build
     # The type of runner that the job will run on
@@ -80,34 +78,56 @@ jobs:
           path: Artifact_Files/Migration/
  
   test:
-    name: Deploy Test
+    name: Deploy Build
     # The type of runner that the job will run on
     runs-on: [self-hosted, sqlauth]
     environment: 'build' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
-    if: ${{ true }} #Set this variable to false to temporarily disable the job
-    needs: build
     env:
-      stage: 'test'
-      databaseName: "Northwind_test"
       userName: ${{ secrets.USERNAME }}
-      license: ${{ secrets.PASSWORD }}
+      password: ${{ secrets.PASSWORD }}
+      stage: 'Build'
+      
+      # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
+      databaseName: "Northwind_Build"
+      JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=northwind_build;encrypt=true;trustServerCertificate=true"
+      displayName: 'Build'
+      executeBuild: true
+      publishArtifacts: true
 
-      JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=Northwind_build;encrypt=true;trustServerCertificate=true;" 
-   
-
-      pauseForCodeReview: true
-
+      
+  
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-        
-      # Runs the Flyway Migrate against the Production database
-      - name: Migrate Test DB
-        if: ${{ true }}
+      
+      #check directory
+      #- name: Check directory
+      #  run: echo $env:path
+
+       
+      # Runs the Flyway Migrate command against the Build database
+      - name: Migrate Build DB
+        if: env.executeBuild == 'true'
         run: |
-          flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info clean info -url="${{ env.JDBC }}" -cleanDisabled="false"
-          echo test, and deploy your project.
+          flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true"  -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" 
+          
+      
+        # Create a directory to stage the artifact files
+      - name: Stage files for publishing
+        if: env.publishArtifacts == 'true'
+        run: |
+          cp -R ${{ GITHUB.WORKSPACE }}/migrations Artifact_Files/Migration/
+  
+      
+      #After migration scripts are validated, publish them as an artifact
+      - name: Publish Validated Migration Scripts as Artifact
+        if: env.publishArtifacts == 'true'
+        uses: actions/upload-artifact@v2
+        with: 
+          name: flyway-build-artifact
+          path: Artifact_Files/Migration/
+   
 
   prod:
     name: Deploy Production
