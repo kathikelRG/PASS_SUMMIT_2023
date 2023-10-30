@@ -106,7 +106,7 @@ jobs:
       - name: Migrate Test DB
         if: ${{ true }}
         run: |
-          flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
+          flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info clean info -url="${{ env.JDBC }}" -cleanDisabled="false"
           echo test, and deploy your project.
 
   prod:
