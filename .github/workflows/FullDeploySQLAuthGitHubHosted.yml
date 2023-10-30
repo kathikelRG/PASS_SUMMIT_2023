@@ -1,11 +1,11 @@
 # This is a basic workflow to help you get started with Actions
  
-name: deployToProductionSQLAuth-GitHubHosted
+name: Example GitHub Pipeline (Self-Hosted)
  
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "release" branch
-  #push:
+  
     #branches:
       #- release
       #- 'migrations/**'
@@ -14,57 +14,55 @@ on:
   workflow_dispatch:
  
 env:
+ 
+  FLYWAY_LICENSE_KEY: ${{ secrets.FLYWAY_LICENSE_KEY }} #Repository Secret - Create this within the Projects Settings > Secrects > Actions section
+  # If the first undo script is U002, this will validate all undo scripts up to and including that
+  FIRST_UNDO_SCRIPT: ${{ secrets.FIRST_UNDO_SCRIPT }}
   # Enable this for additional debug logging
   ACTIONS_RUNNER_DEBUG: true 
  
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  
+  # This workflow contains a single job called "build"
   build:
     name: Deploy Build
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     environment: 'build' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     env:
-      userName: ${{ secrets.USERNAME }}
-      password: ${{ secrets.PASSWORD }}
       stage: 'Build'
-      
-      # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
-      databaseName: "Northwind_Build"
+      databaseName: Northwind_Build
       JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=northwind_build;encrypt=true;trustServerCertificate=true"
+      userName: ${{ secrets.userName }}
+      password: ${{ secrets.password }}
+      # End of Environment Secrets #
       displayName: 'Build'
       executeBuild: true
       publishArtifacts: true
-
-     
  
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       
-      #check directory
-      #- name: Check directory
-      #  run: echo $env:path
-      # TODO URL for community
       - name: Install Flyway
         if: env.executeBuild == 'true'
         run: |
-          "wget -qO- https://download.red-gate.com/maven/release/org/flywaydb/enterprise/flyway-commandline/9.15.1/flyway-commandline-9.15.1-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-9.15.1/flyway /usr/local/bin"
-    
-
+         "wget -qO- https://download.red-gate.com/maven/release/org/flywaydb/enterprise/flyway-commandline/9.15.1/flyway-commandline-9.15.1-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-9.15.1/flyway /usr/local/bin"
+      
+      - name: show contents
+        run: ls ${{ GITHUB.WORKSPACE }}
       # Runs the Flyway Clean command against the Build database
       - name: Clean Build DB
         if: env.executeBuild == 'true'
         run: |
-          flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info clean info -url="${{ env.JDBC }}" -cleanDisabled="false"
+          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}/flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info clean info -url="${{ env.JDBC }}" -cleanDisabled='false'
         
       # Runs the Flyway Migrate command against the Build database
       - name: Migrate Build DB
         if: env.executeBuild == 'true'
         run: |
-          flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true"  -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" 
+          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}/flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
           
      
        # Create a directory to stage the artifact files
@@ -77,100 +75,10 @@ jobs:
       #After migration scripts are validated, publish them as an artifact
       - name: Publish Validated Migration Scripts as Artifact
         if: env.publishArtifacts == 'true'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3.1.1
         with: 
           name: flyway-build-artifact
           path: Artifact_Files/Migration/
  
-  test:
-    name: Deploy Test
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    environment: 'test' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
-    needs: build
-    env:
-      userName: ${{ secrets.USERNAME }}
-      password: ${{ secrets.PASSWORD }}
-      stage: 'Test'
-      
-      # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
-      databaseName: "Northwind_test"
-      JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=northwind_test;encrypt=true;trustServerCertificate=true"
-      displayName: 'test'
-      executeBuild: true
-      publishArtifacts: true
-
-      
-  
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-      
-      #check directory
-      #- name: Check directory
-      #  run: echo $env:path
-      # TODO URL for community
-      - name: Install Flyway
-        if: env.executeBuild == 'true'
-        run: |
-            "wget -qO- https://download.red-gate.com/maven/release/org/flywaydb/enterprise/flyway-commandline/9.15.1/flyway-commandline-9.15.1-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-9.15.1/flyway /usr/local/bin"
-
-       
-      # Runs the Flyway Migrate command against the test database
-      - name: Migrate test DB
-        if: env.executeBuild == 'true'
-        run: |
-          flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true"  -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" 
           
-      
-        # Create a directory to stage the artifact files
-      - name: Stage files for publishing
-        if: env.publishArtifacts == 'true'
-        run: |
-          cp -R ${{ GITHUB.WORKSPACE }}/migrations Artifact_Files/Migration/
   
-      
-      #After migration scripts are validated, publish them as an artifact
-      - name: Publish Validated Migration Scripts as Artifact
-        if: env.publishArtifacts == 'true'
-        uses: actions/upload-artifact@v2
-        with: 
-          name: flyway-test-artifact
-          path: Artifact_Files/Migration/
-   
-
-  prod:
-    name: Deploy Production
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    environment: 'prod' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
-    if: ${{ true }} #Set this variable to false to temporarily disable the job
-    needs: test
-    env:
-      stage: 'Prod'
-      databaseName: "Northwind"
-      userName: ${{ secrets.userName }}
-      password: ${{ secrets.password }}
-      JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=Northwind;encrypt=true;trustServerCertificate=true;User=${userName};Password=${password}" 
-  
-      pauseForCodeReview: true
- 
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-      # TODO URL for community
-      - name: Install Flyway
-        if: env.executeBuild == 'true'
-        run: |
-            "wget -qO- https://download.red-gate.com/maven/release/org/flywaydb/enterprise/flyway-commandline/9.15.1/flyway-commandline-9.15.1-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-9.15.1/flyway /usr/local/bin"
-   
-      
-
-      # Runs the Flyway Migrate against the Production database
-      - name: Migrate Production DB
-        if: ${{ true }}
-        run: |
-          flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true"  -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
-          echo test, and deploy your project.
