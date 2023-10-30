@@ -78,19 +78,20 @@ jobs:
           path: Artifact_Files/Migration/
  
   test:
-    name: Deploy Build
+    name: Deploy Test
     # The type of runner that the job will run on
     runs-on: [self-hosted, sqlauth]
-    environment: 'build' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
+    environment: 'test' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
+    needs: build
     env:
       userName: ${{ secrets.USERNAME }}
       password: ${{ secrets.PASSWORD }}
-      stage: 'Build'
+      stage: 'Test'
       
       # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
-      databaseName: "Northwind_Build"
-      JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=northwind_build;encrypt=true;trustServerCertificate=true"
-      displayName: 'Build'
+      databaseName: "Northwind_test"
+      JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=northwind_test;encrypt=true;trustServerCertificate=true"
+      displayName: 'test'
       executeBuild: true
       publishArtifacts: true
 
@@ -106,8 +107,8 @@ jobs:
       #  run: echo $env:path
 
        
-      # Runs the Flyway Migrate command against the Build database
-      - name: Migrate Build DB
+      # Runs the Flyway Migrate command against the test database
+      - name: Migrate test DB
         if: env.executeBuild == 'true'
         run: |
           flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true"  -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" 
@@ -125,7 +126,7 @@ jobs:
         if: env.publishArtifacts == 'true'
         uses: actions/upload-artifact@v2
         with: 
-          name: flyway-build-artifact
+          name: flyway-test-artifact
           path: Artifact_Files/Migration/
    
 
