@@ -92,7 +92,7 @@ jobs:
       userName: ${{ secrets.USERNAME }}
       license: ${{ secrets.PASSWORD }}
 
-      JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=Northwind_test;encrypt=true;trustServerCertificate=true;" 
+      JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=Northwind_build;encrypt=true;trustServerCertificate=true;" 
    
 
       pauseForCodeReview: true
