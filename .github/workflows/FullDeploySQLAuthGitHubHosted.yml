@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
  
-name: Example GitHub Pipeline (Self-Hosted)
+name: deployToProduction_GitHub_Hosted
  
 # Controls when the workflow will run
 on:
