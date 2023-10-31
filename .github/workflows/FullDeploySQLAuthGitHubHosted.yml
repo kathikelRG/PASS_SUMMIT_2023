@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@v3
       
       - name: Install Flyway
-        run: "wget -qO- https://download.red-gate.com/maven/release/org/flywaydb/enterprise/flyway-commandline/9.22.2/flyway-commandline-9.22.2-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-9.15.1/flyway /usr/local/bin"
+        run: "wget -qO- https://download.red-gate.com/maven/release/org/flywaydb/enterprise/flyway-commandline/9.22.2/flyway-commandline-9.22.2-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-9.22.2/flyway /usr/local/bin"
 
       #- name: show contents
       #  run: ls ${{ GITHUB.WORKSPACE }}
