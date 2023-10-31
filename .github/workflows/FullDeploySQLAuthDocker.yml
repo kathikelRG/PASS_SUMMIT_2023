@@ -30,8 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     container: 
         image: flyway/flyway
-  #      volumes: 
-  #          - ${{ GITHUB.WORKSPACE }}:/
+ 
     environment: 'build' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     env:
       userName: ${{ secrets.USERNAME }}
@@ -63,24 +62,21 @@ jobs:
         run: |
          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"   -locations="filesystem:migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled="false"
      
-      - name: List files
-        run: ls 
-
-
+     
     #    # Create a directory to stage the artifact files
-    #   - name: Stage files for publishing
-    #     if: env.publishArtifacts == 'true'
-    #     run: |
-    #      cp -R ${{ GITHUB.WORKSPACE }}/migrations ${{ GITHUB.WORKSPACE }}/Artifact_Files/
+      - name: Stage files for publishing
+        if: env.publishArtifacts == 'true'
+        run: |
+         cp -R migrations Artifact_Files/
 
      
-    #  #After migration scripts are validated, publish them as an artifact
-    #   - name: Publish Validated Migration Scripts as Artifact
-    #     if: env.publishArtifacts == 'true'
-    #     uses: actions/upload-artifact@v2
-    #     with: 
-    #      name: flyway-build-artifact
-    #      path: ${{ GITHUB.WORKSPACE }}/Artifact_Files/
+     #After migration scripts are validated, publish them as an artifact
+      - name: Publish Validated Migration Scripts as Artifact
+        if: env.publishArtifacts == 'true'
+        uses: actions/upload-artifact@v2
+        with: 
+         name: flyway-build-artifact
+         path: Artifact_Files/
  
      # This workflow contains three jobs, build test and prod"
   test:
@@ -107,15 +103,7 @@ jobs:
     steps:
         # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
         - uses: actions/checkout@v3
-        # TODO: Community edition URL
-        - name: Install Flyway
-          run: "wget -qO- https://download.red-gate.com/maven/release/org/flywaydb/enterprise/flyway-commandline/9.22.2/flyway-commandline-9.22.2-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-9.22.2/flyway /usr/local/bin"
-
-        #- name: show contents
-        #  run: ls ${{ GITHUB.WORKSPACE }}
-        - name: Version
-          run: flyway -v
-
+  
         # Runs the Flyway Migrate command against the Test database
         - name: Migrate Test DB
           if: env.executeBuild == 'true'
@@ -148,16 +136,8 @@ jobs:
     steps:
         # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
         - uses: actions/checkout@v3
-        # TODO: Community edition URL
-        - name: Install Flyway
-          run: "wget -qO- https://download.red-gate.com/maven/release/org/flywaydb/enterprise/flyway-commandline/9.22.2/flyway-commandline-9.22.2-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-9.22.2/flyway /usr/local/bin"
-
-        #- name: show contents
-        #  run: ls ${{ GITHUB.WORKSPACE }}
-        - name: Version
-          run: flyway -v
-
-        # Runs the Flyway Migrate command against the Test database
+          # Runs the Flyway Migrate command against the Test database
+   
         - name: Migrate Test DB
           if: env.executeBuild == 'true'
           run: |
