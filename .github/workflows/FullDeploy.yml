@@ -100,20 +100,13 @@ jobs:
           flyway -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url=${{ env.JDBC }} -cleanDisabled='false'
           echo test, and deploy your project.
 
-  manual_approval: 
-    environment: 'prod'
-    runs-on: self-hosted
-    needs: test
-    steps: 
-        - run: echo "Approved to Prod"
-
   prod:
     name: Deploy Production
     # The type of runner that the job will run on
     runs-on: self-hosted
     environment: 'prod' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     if: ${{ true }} #Set this variable to false to temporarily disable the job
-    needs: manual_approval
+
     env:
       stage: 'Prod'
       databaseName: "Northwind"
