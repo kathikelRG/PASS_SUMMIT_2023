@@ -65,21 +65,21 @@ jobs:
         if: env.executeBuild == 'true'
         run: |
          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled="false"
-    
+     
        # Create a directory to stage the artifact files
       - name: Stage files for publishing
         if: env.publishArtifacts == 'true'
         run: |
-          cp -R ${{ GITHUB.WORKSPACE }}/migrations Artifact_Files/Migration/
- 
-      
-      #After migration scripts are validated, publish them as an artifact
+         cp -R ${{ GITHUB.WORKSPACE }}\migrations Artifact_Files\Migration\
+
+     
+     #After migration scripts are validated, publish them as an artifact
       - name: Publish Validated Migration Scripts as Artifact
         if: env.publishArtifacts == 'true'
-        uses: actions/upload-artifact@v3.1.1
+        uses: actions/upload-artifact@v2
         with: 
-          name: flyway-build-artifact
-          path: Artifact_Files/Migration/
+         name: flyway-build-artifact
+         path: Artifact_Files\Migration\
  
           
   
