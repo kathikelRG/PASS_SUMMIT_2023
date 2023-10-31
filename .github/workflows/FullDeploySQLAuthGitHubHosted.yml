@@ -23,7 +23,7 @@ env:
  
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
+  # This workflow contains three jobs, build test and prod"
   build:
     name: Deploy Build
     # The type of runner that the job will run on
@@ -81,5 +81,43 @@ jobs:
          name: flyway-build-artifact
          path: ${{ GITHUB.WORKSPACE }}/Artifact_Files/
  
-          
-  
+     # This workflow contains three jobs, build test and prod"
+  test:
+    name: Deploy test
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    environment: 'test' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
+    needs: build
+    env:
+        userName: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        stage: 'test'
+        
+        # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
+        databaseName: "Northwind_test"
+        JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=northwind_test;encrypt=true;trustServerCertificate=true"
+        displayName: 'Test'
+        executeBuild: true
+        publishArtifacts: true
+    
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+        # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+        - uses: actions/checkout@v3
+        # TODO: Community edition URL
+        - name: Install Flyway
+          run: "wget -qO- https://download.red-gate.com/maven/release/org/flywaydb/enterprise/flyway-commandline/9.22.2/flyway-commandline-9.22.2-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-9.22.2/flyway /usr/local/bin"
+
+        #- name: show contents
+        #  run: ls ${{ GITHUB.WORKSPACE }}
+        - name: Version
+          run: flyway -v
+
+        # Runs the Flyway Migrate command against the Test database
+        - name: Migrate Test DB
+          if: env.executeBuild == 'true'
+          run: |
+            flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled="false"
+        
+
+            

@@ -78,7 +78,7 @@ jobs:
           path: Artifact_Files/Migration/
  
   test:
-    name: Deploy Test
+    name: Deploy Test 
     # The type of runner that the job will run on
     runs-on: [self-hosted, sqlauth]
     environment: 'test' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
