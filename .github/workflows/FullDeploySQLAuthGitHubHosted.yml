@@ -70,7 +70,7 @@ jobs:
       - name: Stage files for publishing
         if: env.publishArtifacts == 'true'
         run: |
-         cp -R ${{ GITHUB.WORKSPACE }}/migrations ${{ GITHUB.WORKSPACE }}/Artifact_Files/Migration/
+         cp -R ${{ GITHUB.WORKSPACE }}/migrations ${{ GITHUB.WORKSPACE }}/Artifact_Files/
 
      
      #After migration scripts are validated, publish them as an artifact
