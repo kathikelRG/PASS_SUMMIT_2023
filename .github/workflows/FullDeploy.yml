@@ -22,7 +22,7 @@ env:
  
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
+  # This workflow contains a three jobs, Build, Test, and Prod
   build:
     name: Deploy Build
     # The type of runner that the job will run on
@@ -35,7 +35,7 @@ jobs:
       
       # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
       databaseName: "Northwind_Build"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=production;databaseName=northwind_check;encrypt=true;integratedSecurity=true;trustServerCertificate=true;"
+      JDBC: ${{ vars.JDBC }}
 
       displayName: 'Build'
       executeBuild: true
