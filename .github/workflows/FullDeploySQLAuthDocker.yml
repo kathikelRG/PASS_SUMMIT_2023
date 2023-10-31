@@ -31,7 +31,7 @@ jobs:
     container: 
         image: flyway/flyway
   #      volumes: 
-  #          - ${{ GITHUB_WORKSPACE }}:/
+  #          - ${{ GITHUB.WORKSPACE }}:/
     environment: 'build' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     env:
       userName: ${{ secrets.USERNAME }}
@@ -55,13 +55,13 @@ jobs:
       - name: Clean Build DB
         if: env.executeBuild == 'true'
         run: |
-         flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info clean info -url="${{ env.JDBC }}" -cleanDisabled="false"
+         flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"   -locations="filesystem:/migrations" info clean info -url="${{ env.JDBC }}" -cleanDisabled="false"
       
         # Runs the Flyway Migrate command against the Build database
       - name: Migrate Build DB
         if: env.executeBuild == 'true'
         run: |
-         flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled="false"
+         flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"   -locations="filesystem:/migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled="false"
      
       - name: List files
         run: ls 
