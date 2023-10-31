@@ -45,7 +45,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-      
+      # TODO: Community edition URL
       - name: Install Flyway
         run: "wget -qO- https://download.red-gate.com/maven/release/org/flywaydb/enterprise/flyway-commandline/9.22.2/flyway-commandline-9.22.2-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-9.22.2/flyway /usr/local/bin"
 
@@ -79,7 +79,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with: 
          name: flyway-build-artifact
-         path: ${{ GITHUB.WORKSPACE }}/Artifact_Files/Migration/
+         path: ${{ GITHUB.WORKSPACE }}/Artifact_Files/
  
           
   
