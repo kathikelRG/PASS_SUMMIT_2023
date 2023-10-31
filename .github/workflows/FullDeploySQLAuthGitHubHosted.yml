@@ -30,12 +30,13 @@ jobs:
     runs-on: ubuntu-latest
     environment: 'build' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     env:
+      userName: ${{ secrets.USERNAME }}
+      password: ${{ secrets.PASSWORD }}
       stage: 'Build'
-      databaseName: Northwind_Build
+      
+      # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
+      databaseName: "Northwind_Build"
       JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=northwind_build;encrypt=true;trustServerCertificate=true"
-      userName: ${{ secrets.userName }}
-      password: ${{ secrets.password }}
-      # End of Environment Secrets #
       displayName: 'Build'
       executeBuild: true
       publishArtifacts: true
@@ -55,15 +56,14 @@ jobs:
       - name: Clean Build DB
         if: env.executeBuild == 'true'
         run: |
-          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}"  clean -url="${{ env.JDBC }}" -cleanDisabled='false'
-        
-      # Runs the Flyway Migrate command against the Build database
+            flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info clean info -url="${{ env.JDBC }}" -cleanDisabled="false"
+      
+        # Runs the Flyway Migrate command against the Build database
       - name: Migrate Build DB
-        if: env.executeBuild == 'true'  
+        if: env.executeBuild == 'true'
         run: |
-           flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='true' 
-   
-     
+          flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled="false"
+    
        # Create a directory to stage the artifact files
       - name: Stage files for publishing
         if: env.publishArtifacts == 'true'
