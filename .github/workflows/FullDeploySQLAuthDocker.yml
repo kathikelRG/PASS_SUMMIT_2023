@@ -62,20 +62,24 @@ jobs:
         run: |
          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled="false"
      
-       # Create a directory to stage the artifact files
-      - name: Stage files for publishing
-        if: env.publishArtifacts == 'true'
-        run: |
-         cp -R ${{ GITHUB.WORKSPACE }}/migrations ${{ GITHUB.WORKSPACE }}/Artifact_Files/
+      - name: List files
+        run: ls ${{ GITHUB.WORKSPACE }}
+
+        
+    #    # Create a directory to stage the artifact files
+    #   - name: Stage files for publishing
+    #     if: env.publishArtifacts == 'true'
+    #     run: |
+    #      cp -R ${{ GITHUB.WORKSPACE }}/migrations ${{ GITHUB.WORKSPACE }}/Artifact_Files/
 
      
-     #After migration scripts are validated, publish them as an artifact
-      - name: Publish Validated Migration Scripts as Artifact
-        if: env.publishArtifacts == 'true'
-        uses: actions/upload-artifact@v2
-        with: 
-         name: flyway-build-artifact
-         path: ${{ GITHUB.WORKSPACE }}/Artifact_Files/
+    #  #After migration scripts are validated, publish them as an artifact
+    #   - name: Publish Validated Migration Scripts as Artifact
+    #     if: env.publishArtifacts == 'true'
+    #     uses: actions/upload-artifact@v2
+    #     with: 
+    #      name: flyway-build-artifact
+    #      path: ${{ GITHUB.WORKSPACE }}/Artifact_Files/
  
      # This workflow contains three jobs, build test and prod"
   test:
