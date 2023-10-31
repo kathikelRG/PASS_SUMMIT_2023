@@ -81,7 +81,9 @@ jobs:
   test:
     name: Deploy test
     # The type of runner that the job will run on
-    runs-on: flyway/flyway
+    runs-on: ubuntu-latest
+    container: 
+        image: flyway/flyway
     environment: 'test' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     needs: build
     env:
@@ -120,6 +122,9 @@ jobs:
     name: Deploy Production
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    container: 
+        image: flyway/flyway
+
     environment: 'prod' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     needs: test
     env:
