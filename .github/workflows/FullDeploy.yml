@@ -33,7 +33,7 @@ jobs:
       password: ${{ secrets.password }}
       stage: 'Build'
       
-      # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
+      # Environment Secrets - Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
       databaseName: "Northwind_Build"
       JDBC: ${{ vars.JDBC }}
 
@@ -80,17 +80,15 @@ jobs:
     name: Deploy Test
     # The type of runner that the job will run on
     runs-on: self-hosted
-    environment: 'test' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
+    environment: 'test' #Ensure this environment name is setup in the projects Settings>Environment area. 
     if: ${{ true }} #Set this variable to false to temporarily disable the job
     needs: build
     env:
       stage: 'test'
       databaseName: "Northwind_test"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;integratedSecurity=true;databaseName=Northwind_test;encrypt=true;trustServerCertificate=true;" 
+      JDBC: ${{ vars.JDBC }}
       
-      pauseForCodeReview: true
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
@@ -99,8 +97,15 @@ jobs:
       - name: Migrate Production DB
         if: ${{ true }}
         run: |
-          flyway -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
+          flyway -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url=${{ env.JDBC }} -cleanDisabled='false'
           echo test, and deploy your project.
+
+  manual_approval: 
+    environment: 'prod'
+    runs-on: self-hosted
+    needs: test
+    steps: 
+        - run: echo "Approved to Prod"
 
   prod:
     name: Deploy Production
@@ -108,11 +113,11 @@ jobs:
     runs-on: self-hosted
     environment: 'prod' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     if: ${{ true }} #Set this variable to false to temporarily disable the job
-    needs: test
+    needs: manual_approval
     env:
       stage: 'Prod'
       databaseName: "Northwind"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;integratedSecurity=true;databaseName=Northwind;encrypt=true;trustServerCertificate=true;" 
+      JDBC: ${{ vars.JDBC }}
       
       pauseForCodeReview: true
  
@@ -125,5 +130,5 @@ jobs:
       - name: Migrate Production DB
         if: ${{ true }}
         run: |
-          flyway -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
+          flyway -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url=${{ env.JDBC }} -cleanDisabled='false'
           echo test, and deploy your project.
