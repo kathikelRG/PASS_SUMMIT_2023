@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
  
-name: deployToProduction-Workflow1
+name: deployToProduction-TrustedAuth
  
 # Controls when the workflow will run
 on:
@@ -35,7 +35,7 @@ jobs:
       
       # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
       databaseName: "Northwind_Build"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=production;databaseName=northwind_check;encrypt=true;integratedSecurity=true;trustServerCertificate=true;User=flyway;Password=testing1231!"
+      JDBC: "jdbc:sqlserver://localhost;instanceName=production;databaseName=northwind_check;encrypt=true;integratedSecurity=true;trustServerCertificate=true;"
 
       displayName: 'Build'
       executeBuild: true
@@ -71,7 +71,7 @@ jobs:
       #After migration scripts are validated, publish them as an artifact
       - name: Publish Validated Migration Scripts as Artifact
         if: env.publishArtifacts == 'true'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with: 
           name: flyway-build-artifact
           path: Artifact_Files/Migration/
@@ -86,7 +86,7 @@ jobs:
     env:
       stage: 'test'
       databaseName: "Northwind_test"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;integratedSecurity=true;databaseName=Northwind_test;encrypt=true;trustServerCertificate=true;User=flyway;Password=testing1231!" 
+      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;integratedSecurity=true;databaseName=Northwind_test;encrypt=true;trustServerCertificate=true;" 
       
       pauseForCodeReview: true
 
@@ -112,7 +112,7 @@ jobs:
     env:
       stage: 'Prod'
       databaseName: "Northwind"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;integratedSecurity=true;databaseName=Northwind;encrypt=true;trustServerCertificate=true;User=flyway;Password=testing1231!" 
+      JDBC: "jdbc:sqlserver://localhost;instanceName=Production;integratedSecurity=true;databaseName=Northwind;encrypt=true;trustServerCertificate=true;" 
       
       pauseForCodeReview: true
  

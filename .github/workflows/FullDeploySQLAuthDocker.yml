@@ -75,7 +75,7 @@ jobs:
         if: env.publishArtifacts == 'true'
         uses: actions/upload-artifact@v3
         with: 
-         name: flyway-build-artifact
+         name: flyway-build-artifact #name of the file
          path: Artifact_Files/
  
      # This workflow contains three jobs, build test and prod"
