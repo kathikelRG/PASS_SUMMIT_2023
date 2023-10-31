@@ -51,7 +51,9 @@ jobs:
 
       #- name: show contents
       #  run: ls ${{ GITHUB.WORKSPACE }}
-
+      - name: Version
+        run: flyway -v
+        
       # Runs the Flyway Clean command against the Build database
       - name: Clean Build DB
         if: env.executeBuild == 'true'
