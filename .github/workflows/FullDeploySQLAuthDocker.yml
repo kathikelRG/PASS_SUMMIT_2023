@@ -30,6 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     container: 
         image: flyway/flyway
+  #      volumes: 
+  #          - ${{ GITHUB_WORKSPACE }}:/
     environment: 'build' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     env:
       userName: ${{ secrets.USERNAME }}
@@ -47,8 +49,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-      # TODO: Community edition URL
- 
+      
  
       # Runs the Flyway Clean command against the Build database
       - name: Clean Build DB
@@ -63,9 +64,9 @@ jobs:
          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled="false"
      
       - name: List files
-        run: ls ${{ GITHUB.WORKSPACE }}
+        run: ls 
 
-        
+
     #    # Create a directory to stage the artifact files
     #   - name: Stage files for publishing
     #     if: env.publishArtifacts == 'true'
