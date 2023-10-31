@@ -56,7 +56,7 @@ jobs:
       - name: Clean Build DB
         if: env.executeBuild == 'true'
         run: |
-            flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info clean info -url="${{ env.JDBC }}" -cleanDisabled="false"
+            flyway -v #flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info clean info -url="${{ env.JDBC }}" -cleanDisabled="false"
       
         # Runs the Flyway Migrate command against the Build database
       - name: Migrate Build DB
