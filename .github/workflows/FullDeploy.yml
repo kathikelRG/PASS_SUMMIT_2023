@@ -15,7 +15,7 @@ on:
  
 env:
  
-  FLYWAY_LICENSE_KEY: ${{ secrets.FLYWAY_LICENSE_KEY }} #Repository Secret - Create this within the Projects Settings > Secrects > Actions section
+  #Repository Secret - Create this within the Projects Settings > Secrects > Actions section
 
   # Enable this for additional debug logging
   ACTIONS_RUNNER_DEBUG: true 
@@ -26,7 +26,7 @@ jobs:
   build:
     name: Deploy Build
     # The type of runner that the job will run on
-    runs-on: self-hosted
+    runs-on: [self-hosted, trustedauth]
     environment: 'build' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     env:
       userName: ${{ secrets.userName }}
@@ -52,13 +52,13 @@ jobs:
       - name: Clean Build DB
         if: env.executeBuild == 'true'
         run: |
-          flyway -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info clean info -url=${{ env.JDBC }} -cleanDisabled='false' -reportFilename="Reports\CleanDB"
+          flyway -baselineOnMigrate="true"  -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info clean info -url=${{ env.JDBC }} -cleanDisabled='false' -reportFilename="Reports\CleanDB"
         
       # Runs the Flyway Migrate command against the Build database
       - name: Migrate Build DB
         if: env.executeBuild == 'true'
         run: |
-          flyway -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url=${{ env.JDBC }} -cleanDisabled='false' -reportFilename="Reports\ValidateVScripts"
+          flyway -baselineOnMigrate="true" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url=${{ env.JDBC }} -cleanDisabled='false' -reportFilename="Reports\ValidateVScripts"
           
      
        # Create a directory to stage the artifact files
@@ -79,7 +79,7 @@ jobs:
   test:
     name: Deploy Test
     # The type of runner that the job will run on
-    runs-on: self-hosted
+    runs-on: [self-hosted, trustedauth]
     environment: 'test' #Ensure this environment name is setup in the projects Settings>Environment area. 
     if: ${{ true }} #Set this variable to false to temporarily disable the job
     needs: build
@@ -97,13 +97,13 @@ jobs:
       - name: Migrate Production DB
         if: ${{ true }}
         run: |
-          flyway -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url=${{ env.JDBC }} -cleanDisabled='false'
+          flyway -baselineOnMigrate="true" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url=${{ env.JDBC }} -cleanDisabled='false'
           echo test, and deploy your project.
 
   prod:
     name: Deploy Production
     # The type of runner that the job will run on
-    runs-on: self-hosted
+    runs-on: [self-hosted, trustedauth]
     environment: 'prod' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     if: ${{ true }} #Set this variable to false to temporarily disable the job
 
@@ -123,5 +123,5 @@ jobs:
       - name: Migrate Production DB
         if: ${{ true }}
         run: |
-          flyway -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url=${{ env.JDBC }} -cleanDisabled='false'
+          flyway -baselineOnMigrate="true"  -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url=${{ env.JDBC }} -cleanDisabled='false'
           echo test, and deploy your project.
