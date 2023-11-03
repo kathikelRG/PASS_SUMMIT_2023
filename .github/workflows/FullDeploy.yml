@@ -28,7 +28,7 @@ jobs:
     name: Deploy Build
     # The type of runner that the job will run on
     runs-on: [self-hosted, trustedauth]
-    environment: 'build' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
+    environment: 'prod' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     env:
       stage: 'Build'
       
