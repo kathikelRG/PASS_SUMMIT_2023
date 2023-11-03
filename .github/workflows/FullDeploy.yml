@@ -86,7 +86,7 @@ jobs:
     runs-on: [self-hosted, trustedauth]
     environment: 'test' #Ensure this environment name is setup in the projects Settings>Environment area. 
     if: ${{ true }} #Set this variable to false to temporarily disable the job
-    needs: build
+    #needs: build
     env:
       stage: 'test'
       databaseName: "Northwind_test"
@@ -110,7 +110,7 @@ jobs:
     runs-on: [self-hosted, trustedauth]
     environment: 'prod' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     if: ${{ true }} #Set this variable to false to temporarily disable the job
-    needs: test
+    #needs: test
     env:
       stage: 'Prod'
       databaseName: "Northwind"
