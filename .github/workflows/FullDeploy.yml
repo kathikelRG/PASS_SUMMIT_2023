@@ -15,14 +15,16 @@ on:
  
 env:
  
-  #Repository Secret - Create this within the Projects Settings > Secrects > Actions section
+  #Repository Secrets and varaibles - Create this within the Projects Settings > Secrects > Actions section
 
   # Enable this for additional debug logging
   ACTIONS_RUNNER_DEBUG: true 
+  Test: ${{ vars.TESTVARIABLE }}
  
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a three jobs, Build, Test, and Prod
+
   build:
     name: Deploy Build
     # The type of runner that the job will run on
@@ -48,6 +50,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       
+    
+      - name: Display TestVariable
+        run: echo ${{ env.Test  }} 
+
       # Runs the Flyway Clean command against the Build database
       - name: Clean Build DB
         if: env.executeBuild == 'true'
