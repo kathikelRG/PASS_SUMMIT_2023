@@ -101,7 +101,7 @@ jobs:
       - name: Migrate Production DB
         if: ${{ true }}
         run: |
-          flyway -baselineOnMigrate="true" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}"" -cleanDisabled='false'
+          flyway -baselineOnMigrate="true" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
           echo test, and deploy your project.
 
   prod:
