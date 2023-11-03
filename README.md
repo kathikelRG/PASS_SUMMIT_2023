@@ -1,6 +1,7 @@
 To try out:
 1. Fork repo
 2. Set up environment variables
+3. Try the github-hosted workflow
+4. Will need access to database server from GitHub
 
 
-**Check out the [documentation to get started](https://documentation.red-gate.com/fd/quickstart-flyway-autopilot-215154689.html)**.
