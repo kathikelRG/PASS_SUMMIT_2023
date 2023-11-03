@@ -51,6 +51,9 @@ jobs:
       - name: Display TestVariable
         run: echo ${{ env.Test  }} 
 
+      - name: display jdbc
+        run: echo ${{ env.JDBC }}
+
       # Runs the Flyway Clean command against the Build database
       - name: Clean Build DB
         if: env.executeBuild == 'true'
@@ -109,7 +112,7 @@ jobs:
     runs-on: [self-hosted, trustedauth]
     environment: 'prod' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     if: ${{ true }} #Set this variable to false to temporarily disable the job
-
+    needs: test
     env:
       stage: 'Prod'
       databaseName: "Northwind"
