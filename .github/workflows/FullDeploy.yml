@@ -28,7 +28,7 @@ jobs:
     name: Deploy Build
     # The type of runner that the job will run on
     runs-on: [self-hosted, trustedauth]
-    environment: 'prod' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
+    environment: 'build' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     env:
       stage: 'Build'
       
@@ -56,13 +56,13 @@ jobs:
       - name: Clean Build DB
         if: env.executeBuild == 'true'
         run: |
-          flyway -baselineOnMigrate="true"  -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info clean info -url=${{ env.JDBC }} -cleanDisabled='false' -reportFilename="Reports\CleanDB"
+          flyway -baselineOnMigrate="true"  -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info clean info -url="${{ env.JDBC }}" -cleanDisabled='false' -reportFilename="Reports\CleanDB"
         
       # Runs the Flyway Migrate command against the Build database
       - name: Migrate Build DB
         if: env.executeBuild == 'true'
         run: |
-          flyway -baselineOnMigrate="true" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url=${{ env.JDBC }} -cleanDisabled='false' -reportFilename="Reports\ValidateVScripts"
+          flyway -baselineOnMigrate="true" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false' -reportFilename="Reports\ValidateVScripts"
           
      
        # Create a directory to stage the artifact files
@@ -86,7 +86,7 @@ jobs:
     runs-on: [self-hosted, trustedauth]
     environment: 'test' #Ensure this environment name is setup in the projects Settings>Environment area. 
     if: ${{ true }} #Set this variable to false to temporarily disable the job
-    #needs: build
+    needs: build
     env:
       stage: 'test'
       databaseName: "Northwind_test"
@@ -110,7 +110,7 @@ jobs:
     runs-on: [self-hosted, trustedauth]
     environment: 'prod' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     if: ${{ true }} #Set this variable to false to temporarily disable the job
-    #needs: test
+    needs: test
     env:
       stage: 'Prod'
       databaseName: "Northwind"
