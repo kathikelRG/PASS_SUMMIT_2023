@@ -16,8 +16,6 @@ on:
 env:
  
   #Repository Secret - Create this within the Projects Settings > Secrects > Actions section
-  # If the first undo script is U002, this will validate all undo scripts up to and including that
-  FIRST_UNDO_SCRIPT: ${{ secrets.FIRST_UNDO_SCRIPT }}
   # Enable this for additional debug logging
   ACTIONS_RUNNER_DEBUG: true 
  
