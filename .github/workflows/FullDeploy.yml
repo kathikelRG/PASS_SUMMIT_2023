@@ -7,7 +7,7 @@ on:
   # Triggers the workflow on push or pull request events but only for the "release" branch
   push:
     branches:
-      - release
+      - main
     paths:
       - 'migrations/**.sql'
  
