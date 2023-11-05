@@ -4,11 +4,6 @@ name: deployToProductionSQLAuth-Workflow
  
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "release" branch
-  #push:
-    #branches:
-      #- release
-      #- 'migrations/*'
  
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
