@@ -22,12 +22,12 @@ jobs:
     environment: 'build' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     env:
       userName: ${{ secrets.USERNAME }}
-      password: ${{ secrets.PASSWORD }}
-      stage: 'Build'
+      password: ${{ secrets.PASSWORD }}  
+      JDBC: ${{ vars.JDBC_SQLAUTH }}
       
-      # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
+       # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
       databaseName: "Northwind_Build"
-      JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=northwind_build;encrypt=true;trustServerCertificate=true"
+      stage: 'Build'
       displayName: 'Build'
       executeBuild: true
       publishArtifacts: true
@@ -39,22 +39,17 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       
-      #check directory
-      #- name: Check directory
-      #  run: echo $env:path
-
-
       # Runs the Flyway Clean command against the Build database
       - name: Clean Build DB
         if: env.executeBuild == 'true'
         run: |
-          flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info clean info -url="${{ env.JDBC }}" -cleanDisabled="false"
+          flyway info clean info -user="$env:userName" -password="$env:password" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations"  -url="${{ env.JDBC }}" -cleanDisabled="false"
         
       # Runs the Flyway Migrate command against the Build database
       - name: Migrate Build DB
         if: env.executeBuild == 'true'
         run: |
-          flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true"  -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" 
+          flyway info migrate info -user="$env:username" -password="$env:password" -baselineOnMigrate="true"  -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations"  -url="${{ env.JDBC }}" 
           
      
        # Create a directory to stage the artifact files
@@ -81,15 +76,12 @@ jobs:
     env:
       userName: ${{ secrets.USERNAME }}
       password: ${{ secrets.PASSWORD }}
-      stage: 'Test'
+      JDBC: ${{ vars.JDBC_SQLAUTH }}
       
-      # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
       databaseName: "Northwind_test"
-      JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=northwind_test;encrypt=true;trustServerCertificate=true"
+      stage: 'Test'
       displayName: 'test'
       executeBuild: true
-      publishArtifacts: true
-
       
   
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -97,32 +89,14 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       
-      #check directory
-      #- name: Check directory
-      #  run: echo $env:path
-
-       
+     
       # Runs the Flyway Migrate command against the test database
       - name: Migrate test DB
         if: env.executeBuild == 'true'
         run: |
           flyway -user="$env:username" -password="$env:password" -baselineOnMigrate="true"  -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" 
           
-      
-        # Create a directory to stage the artifact files
-      - name: Stage files for publishing
-        if: env.publishArtifacts == 'true'
-        run: |
-          cp -R ${{ GITHUB.WORKSPACE }}/migrations Artifact_Files/Migration/
-  
-      
-      #After migration scripts are validated, publish them as an artifact
-      - name: Publish Validated Migration Scripts as Artifact
-        if: env.publishArtifacts == 'true'
-        uses: actions/upload-artifact@v2
-        with: 
-          name: flyway-test-artifact
-          path: Artifact_Files/Migration/
+
    
 
   prod:
@@ -133,13 +107,13 @@ jobs:
     if: ${{ true }} #Set this variable to false to temporarily disable the job
     needs: test
     env:
-      stage: 'Prod'
-      databaseName: "Northwind"
+
       userName: ${{ secrets.userName }}
       password: ${{ secrets.password }}
-      JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=Northwind;encrypt=true;trustServerCertificate=true;User=${userName};Password=${password}" 
-  
-      pauseForCodeReview: true
+      JDBC: ${{ vars.JDBC_SQLAUTH }} 
+      stage: 'Prod'
+      databaseName: "Northwind"
+
  
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:

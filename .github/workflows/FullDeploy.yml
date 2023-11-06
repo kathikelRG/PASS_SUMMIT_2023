@@ -50,7 +50,7 @@ jobs:
       
     
       - name: Display TestVariable
-        run: echo "${{ env.Test  }}"
+        run: echo "${{ env.Test }}"
 
 
       # Runs the Flyway Clean command against the Build database
