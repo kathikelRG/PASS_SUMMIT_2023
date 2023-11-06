@@ -21,7 +21,7 @@ env:
   # Enable this for additional debug logging
   ACTIONS_RUNNER_DEBUG: true 
   Test: ${{ vars.TESTVARIABLE }}
- 
+  
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a three jobs, Build, Test, and Prod
