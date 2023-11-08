@@ -92,7 +92,7 @@ jobs:
       userName: ${{ secrets.USERNAME }}
       license: ${{ secrets.PASSWORD }}
 
-      JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=Northwind_test;encrypt=true;trustServerCertificate=true;User=${userName};Password=${password}" 
+      JDBC: ${{ vars.JDBC_SQLAUTH }} 
    
 
       pauseForCodeReview: true
@@ -121,11 +121,9 @@ jobs:
       databaseName: "Northwind"
       userName: ${{ secrets.userName }}
       password: ${{ secrets.password }}
-      JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=Northwind;encrypt=true;trustServerCertificate=true;User=${userName};Password=${password}" 
-  
-      pauseForCodeReview: true
- 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+      JDBC: ${{ vars.JDBC_SQLAUTH }}
+
+      
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
