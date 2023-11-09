@@ -1,4 +1,4 @@
--- Create a table and stored procedure
+--Create a table and stored procedure
 CREATE TABLE	 dbo.PurchaseOrders (
 	PurchaseOrderID INT NOT NULL IDENTITY PRIMARY KEY,
 	CustomerID NCHAR(40) NOT NULL,
