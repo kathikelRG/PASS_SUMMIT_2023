@@ -24,10 +24,8 @@ jobs:
     env:
       userName: ${{ secrets.USERNAME }}
       password: ${{ secrets.PASSWORD }}
-      stage: 'Build'
       
       # Environment Secrets - Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
-      databaseName: "Northwind_Build"
       JDBC: ${{ vars.JDBC_SQLAUTH }}
       displayName: 'Build'
       executeBuild: true
@@ -41,8 +39,6 @@ jobs:
       - name: Install Flyway
         run: "wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/9.22.2/flyway-commandline-9.22.2-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-9.22.2/flyway /usr/local/bin"
                        
-      #- name: show contents
-      #  run: ls ${{ GITHUB.WORKSPACE }}
       - name: Version
         run: flyway -v
 
@@ -83,20 +79,14 @@ jobs:
     env:
         userName: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
-        stage: 'test'
-        
-        # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
-        databaseName: "Northwind_test"
         JDBC: ${{ vars.JDBC_SQLAUTH }}
         displayName: 'Test'
         executeBuild: true
-        publishArtifacts: true
     
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
         # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
         - uses: actions/checkout@v3
-        # TODO: Community edition URL
         - name: Install Flyway
           run: "wget -qO- https://download.red-gate.com/maven/release/org/flywaydb/enterprise/flyway-commandline/9.22.2/flyway-commandline-9.22.2-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-9.22.2/flyway /usr/local/bin"
 
@@ -121,25 +111,17 @@ jobs:
     env:
         userName: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
-        stage: 'test'
-        
-        # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
-        databaseName: "Northwind_test"
         JDBC: ${{ vars.JDBC_SQLAUTH }}
         displayName: 'Production'
         executeBuild: true
-        publishArtifacts: true
     
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
         # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
         - uses: actions/checkout@v3
-        # TODO: Community edition URL
         - name: Install Flyway
           run: "wget -qO- https://download.red-gate.com/maven/release/org/flywaydb/enterprise/flyway-commandline/9.22.2/flyway-commandline-9.22.2-linux-x64.tar.gz | tar -xvz && sudo ln -s `pwd`/flyway-9.22.2/flyway /usr/local/bin"
 
-        #- name: show contents
-        #  run: ls ${{ GITHUB.WORKSPACE }}
         - name: Version
           run: flyway -v
 

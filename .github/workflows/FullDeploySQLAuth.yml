@@ -30,10 +30,7 @@ jobs:
     env:
       userName: ${{ secrets.USERNAME }}
       password: ${{ secrets.PASSWORD }}
-      stage: 'Build'
-      
       # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
-      databaseName: "Northwind_Build"
       JDBC: ${{ vars.JDBC_SQLAUTH }}
       displayName: 'Build'
       executeBuild: true
@@ -46,10 +43,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       
-      #check directory
-      #- name: Check directory
-      #  run: echo $env:path
-
 
       # Runs the Flyway Clean command against the Build database
       - name: Clean Build DB
@@ -87,15 +80,10 @@ jobs:
     if: ${{ true }} #Set this variable to false to temporarily disable the job
     needs: build
     env:
-      stage: 'test'
-      databaseName: "Northwind_test"
       userName: ${{ secrets.USERNAME }}
-      license: ${{ secrets.PASSWORD }}
+      password: ${{ secrets.PASSWORD }}
 
-      JDBC: ${{ vars.JDBC_SQLAUTH }} 
-   
-
-      pauseForCodeReview: true
+      JDBC: ${{ vars.JDBC_SQLAUTH }}   
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -117,8 +105,7 @@ jobs:
     if: ${{ true }} #Set this variable to false to temporarily disable the job
     needs: test
     env:
-      stage: 'Prod'
-      databaseName: "Northwind"
+
       userName: ${{ secrets.userName }}
       password: ${{ secrets.password }}
       JDBC: ${{ vars.JDBC_SQLAUTH }}
