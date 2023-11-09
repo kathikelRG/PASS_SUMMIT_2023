@@ -19,6 +19,7 @@ env:
   #Repository Secrets and varaibles - Create this within the Projects Settings > Secrects > Actions section
 
   # Enable this for additional debug logging
+  #######SHOW THIS!!!!!!!!
   ACTIONS_RUNNER_DEBUG: true 
   Test: ${{ vars.TESTVARIABLE }}
 
@@ -30,13 +31,8 @@ jobs:
     # The type of runner that the job will run on
     runs-on: [self-hosted, trustedauth]
     environment: 'build' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
-    env:
-      #stage: 'Build'
-      
-      databaseName: "Northwind_Build"
+    env:    
       JDBC: ${{ vars.JDBC }}
-
-      displayName: 'Build'
       executeBuild: true
       publishArtifacts: true     
  
@@ -44,11 +40,9 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-      
-    
+          
       - name: Display TestVariable
         run: echo "${{ env.Test }}"
-
 
       # Runs the Flyway Clean command against the Build database
       - name: Clean Build DB
@@ -69,7 +63,7 @@ jobs:
         run: |
           cp -R ${{ GITHUB.WORKSPACE }}/migrations Artifact_Files/Migration/
  
-      
+      ########SHOW ARTIFACTS!!!!!!!!!!!!!!!!!!!!
       #After migration scripts are validated, publish them as an artifact
       - name: Publish Validated Migration Scripts as Artifact
         if: env.publishArtifacts == 'true'
@@ -86,8 +80,7 @@ jobs:
     if: ${{ true }} #Set this variable to false to temporarily disable the job
     needs: build
     env:
-      stage: 'test'
-      databaseName: "Northwind_test"
+
       JDBC: ${{ vars.JDBC }}
       
      # Steps represent a sequence of tasks that will be executed as part of the job
@@ -110,12 +103,9 @@ jobs:
     if: ${{ true }} #Set this variable to false to temporarily disable the job
     needs: test
     env:
-      stage: 'Prod'
-      databaseName: "Northwind"
+
       JDBC: ${{ vars.JDBC }}
       
-      pauseForCodeReview: true
- 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
