@@ -113,7 +113,7 @@ jobs:
         
         # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
         databaseName: "Northwind_test"
-        JDBC: "jdbc:sqlserver://20.25.83.120:50417;instanceName=Production;authentication=sqlPassword;databaseName=northwind;encrypt=true;trustServerCertificate=true"
+        JDBC: ${{ vars.JDBC_SQLAUTH }}
         displayName: 'Production'
         executeBuild: true
 
