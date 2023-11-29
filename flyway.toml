@@ -3,7 +3,7 @@ name = "FlywayTrialProject"
 databaseType = "SqlServer"
 
 [environments.production]
-url = "jdbc:sqlserver://localhost;instanceName=Production;integratedSecurity=true;databaseName=Northwind;encrypt=true;trustServerCertificate=true;"
+url = "${env.JDBC}"
 displayName = "Production"
 
 [environments.test]
