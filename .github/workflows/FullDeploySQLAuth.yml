@@ -28,7 +28,7 @@ jobs:
     runs-on: [self-hosted, sqlauth]
     environment: 'build' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     env:
-      userName: ${{ secrets.USERNAME }}
+      user: ${{ secrets.USERNAME }}
       password: ${{ secrets.PASSWORD }}
       # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
       JDBC: ${{ vars.JDBC_SQLAUTH }}
@@ -81,7 +81,7 @@ jobs:
     if: ${{ true }} #Set this variable to false to temporarily disable the job
     needs: build
     env:
-      userName: ${{ secrets.USERNAME }}
+      user: ${{ secrets.USERNAME }}
       password: ${{ secrets.PASSWORD }}
 
       JDBC: ${{ vars.JDBC_SQLAUTH }}   
@@ -107,7 +107,7 @@ jobs:
     needs: test
     env:
 
-      userName: ${{ secrets.userName }}
+      user: ${{ secrets.userName }}
       password: ${{ secrets.password }}
       JDBC: ${{ vars.JDBC_SQLAUTH }}
 
