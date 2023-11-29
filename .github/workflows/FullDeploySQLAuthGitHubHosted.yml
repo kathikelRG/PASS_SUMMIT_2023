@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: 'build' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     env:
-      userName: ${{ secrets.USERNAME }}
+      user: ${{ secrets.USERNAME }}
       password: ${{ secrets.PASSWORD }}
       
       # Environment Secrets - Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
@@ -46,13 +46,13 @@ jobs:
       - name: Clean Build DB
         if: env.executeBuild == 'true'
         run: |
-         flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info clean info -environment="build" -cleanDisabled="false"
+         flyway  -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info clean info -environment="build" -cleanDisabled="false"
       
         # Runs the Flyway Migrate command against the Build database
       - name: Migrate Build DB
         if: env.executeBuild == 'true'
         run: |
-         flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -environmnet="build" -cleanDisabled="false"
+         flyway  -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -environmnet="build" -cleanDisabled="false"
      
        # Create a directory to stage the artifact files
       - name: Stage files for publishing
@@ -77,7 +77,7 @@ jobs:
     environment: 'test' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     needs: build
     env:
-        userName: ${{ secrets.USERNAME }}
+        user: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         JDBC: ${{ vars.JDBC_SQLAUTH }}
         displayName: 'Test'
@@ -99,7 +99,7 @@ jobs:
         - name: Migrate Test DB
           if: env.executeBuild == 'true'
           run: |
-            flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -environment="test" -cleanDisabled="false"
+            flyway  -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -environment="test" -cleanDisabled="false"
     
 # This workflow contains three jobs, build test and prod"
   prod:
@@ -109,7 +109,7 @@ jobs:
     environment: 'prod' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     needs: test
     env:
-        userName: ${{ secrets.USERNAME }}
+        user: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         JDBC: ${{ vars.JDBC_SQLAUTH }}
         displayName: 'Production'
@@ -129,7 +129,7 @@ jobs:
         - name: Migrate Test DB
           if: env.executeBuild == 'true'
           run: |
-            flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -environment="production" -cleanDisabled="false"
+            flyway  -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -environment="production" -cleanDisabled="false"
         
 
     
