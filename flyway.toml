@@ -10,6 +10,10 @@ displayName = "Production"
 url = "${env.JDBC}"
 displayName = "Test"
 
+[environments.build]
+url = "${env.JDBC}"
+displayName = "build"
+
 [flyway]
 locations = [ "filesystem:migrations" ]
 mixed = true
