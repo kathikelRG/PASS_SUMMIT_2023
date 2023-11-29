@@ -2,11 +2,13 @@ id = "97ea357d-2613-4415-b434-775478105625"
 name = "FlywayTrialProject"
 databaseType = "SqlServer"
 
-[environments.target2]
-url = "jdbc:sqlserver://localhost;instanceName=Production;integratedSecurity=true;databaseName=Northwind_test;encrypt=true;trustServerCertificate=true"
+[environments.production]
+url = "jdbc:sqlserver://localhost;instanceName=Production;integratedSecurity=true;databaseName=Northwind;encrypt=true;trustServerCertificate=true;"
 displayName = "Production"
 
-
+[environments.test]
+url = "${env.JDBC}"
+displayName = "Test"
 
 [flyway]
 locations = [ "filesystem:migrations" ]
