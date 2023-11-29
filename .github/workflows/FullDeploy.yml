@@ -88,8 +88,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
         
-      # Runs the Flyway Migrate against the Production database
-      - name: Migrate Production DB
+      - name: check version
+        run: flyway -v
+      # Runs the Flyway Migrate against the test database
+      - name: Migrate test DB
         if: ${{ true }}
         run: |
           flyway -baselineOnMigrate="true" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
@@ -110,7 +112,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-        
+       
+    
       # Runs the Flyway Migrate against the Production database
       - name: Migrate Production DB
         if: ${{ true }}
