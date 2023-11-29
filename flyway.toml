@@ -4,15 +4,21 @@ databaseType = "SqlServer"
 
 [environments.production]
 url = "${env.JDBC}"
+user="${env.user}"
+password="${env.password}"
 displayName = "Production"
 
 [environments.test]
 url = "${env.JDBC}"
 displayName = "Test"
+user="${env.user}"
+password="${env.password}"
 
 [environments.build]
 url = "${env.JDBC}"
 displayName = "build"
+user="${env.user}"
+password="${env.password}"
 
 [flyway]
 locations = [ "filesystem:migrations" ]
