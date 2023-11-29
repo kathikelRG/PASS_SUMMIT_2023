@@ -52,7 +52,7 @@ jobs:
       - name: Migrate Build DB
         if: env.executeBuild == 'true'
         run: |
-         flyway  -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -environmnet="build" -cleanDisabled="false"
+         flyway  -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -environmentt="build" -cleanDisabled="false"
      
        # Create a directory to stage the artifact files
       - name: Stage files for publishing
