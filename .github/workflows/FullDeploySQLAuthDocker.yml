@@ -128,7 +128,7 @@ jobs:
         - name: Migrate Test DB
           if: env.executeBuild == 'true'
           run: |
-            flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -environment="production" -cleanDisabled="false"
+            flyway -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -environment="production" -cleanDisabled="false"
         
 
     

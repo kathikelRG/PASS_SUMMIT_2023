@@ -28,7 +28,7 @@ jobs:
     runs-on: [self-hosted, sqlauth]
     environment: 'build' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     env:
-      userName: ${{ secrets.USERNAME }}
+      user: ${{ secrets.USERNAME }}
       password: ${{ secrets.PASSWORD }}
       # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
       JDBC: ${{ vars.JDBC_SQLAUTH }}
@@ -49,13 +49,13 @@ jobs:
       - name: Clean Build DB
         if: env.executeBuild == 'true'
         run: |
-          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info clean info -environment="build" -cleanDisabled="false"
+          flyway  -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info clean info -environment="build" -cleanDisabled="false"
         
       # Runs the Flyway Migrate command against the Build database
       - name: Migrate Build DB
         if: env.executeBuild == 'true'
         run: |
-          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"  -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -environment="build"
+          flyway -baselineOnMigrate="true"  -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -environment="build"
           
      
        # Create a directory to stage the artifact files
@@ -81,7 +81,7 @@ jobs:
     if: ${{ true }} #Set this variable to false to temporarily disable the job
     needs: build
     env:
-      userName: ${{ secrets.USERNAME }}
+      user: ${{ secrets.USERNAME }}
       password: ${{ secrets.PASSWORD }}
 
       JDBC: ${{ vars.JDBC_SQLAUTH }}   
@@ -95,7 +95,7 @@ jobs:
       - name: Migrate Test DB
         if: ${{ true }}
         run: |
-          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -environment="test" -cleanDisabled='false'
+          flyway  -baselineOnMigrate="true" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -environment="test" -cleanDisabled='false'
           echo test, and deploy your project.
 
   prod:
@@ -107,7 +107,7 @@ jobs:
     needs: test
     env:
 
-      userName: ${{ secrets.userName }}
+      user: ${{ secrets.userName }}
       password: ${{ secrets.password }}
       JDBC: ${{ vars.JDBC_SQLAUTH }}
 
@@ -120,5 +120,5 @@ jobs:
       - name: Migrate Production DB
         if: ${{ true }}
         run: |
-          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"  -configFiles="${{ GITHUB.WORKSPACE }}\flyway.toml" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -environment="production" -cleanDisabled='false'
+          flyway -baselineOnMigrate="true"  -configFiles="${{ GITHUB.WORKSPACE }}\flyway.toml" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -environment="production" -cleanDisabled='false'
           echo test, and deploy your project.
