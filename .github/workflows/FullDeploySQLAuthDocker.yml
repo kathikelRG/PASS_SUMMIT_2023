@@ -123,11 +123,12 @@ jobs:
         # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
         - uses: actions/checkout@v3
           # Runs the Flyway Migrate command against the Test database
-   
+        - name: check version
+          run: flyway -v
         - name: Migrate Test DB
           if: env.executeBuild == 'true'
           run: |
-            flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled="false"
+            flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"   -locations="filesystem:${{ GITHUB.WORKSPACE }}/migrations" info migrate info -environment="production" -cleanDisabled="false"
         
 
     
