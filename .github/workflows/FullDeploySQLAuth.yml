@@ -119,5 +119,5 @@ jobs:
       - name: Migrate Production DB
         if: ${{ true }}
         run: |
-          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"  -configFiles="${{ GITHUB.WORKSPACE }}\flyway.conf" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
+          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true"  -configFiles="${{ GITHUB.WORKSPACE }}\flyway.toml" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -environment="production" -cleanDisabled='false'
           echo test, and deploy your project.
